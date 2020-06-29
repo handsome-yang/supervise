@@ -1,14 +1,46 @@
-p{
+p {
   padding: 0;
   margin: 0;
 }
 
-.title-text{
+ul {
+  margin: 0;
+  padding: 0;
+  li {
+    list-style: none;
+  }
+}
+
+.title-text {
   display: flex;
   align-items: center;
   padding-left: 40px;
-  font-size:18px;
-  font-family:Source Han Serif CN;
-  font-weight:400;
-  color:rgba(204,215,221,1);
+  font-size: 18px;
+  font-family: Source Han Serif CN;
+  font-weight: 400;
+  color: rgba(204, 215, 221, 1);
+}
+
+body .el-scrollbar__wrap {
+  overflow-x: hidden;
+}
+
+// 滚动条样式美化
+::-webkit-scrollbar-track-piece {
+  //滚动条凹槽的颜色，还可以设置边框属性
+  background-color: #f8f8f8;
+}
+::-webkit-scrollbar {
+  //滚动条的宽度
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-thumb {
+  //滚动条的设置
+  background-color: #dddddd;
+  background-clip: padding-box;
+  min-height: 28px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb;
 }
