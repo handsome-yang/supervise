@@ -1,21 +1,23 @@
 const path = require('path')
+const webpack = require('webpack');
+
 module.exports = {
   lintOnSave: false,
   publicPath: '/supervise',
   outputDir: 'supervise',
   devServer: {
-    port: 8899,
+    port: 5500,
     open: true,
-    proxy: {
-      '/gis': {
-        target: 'http://localhost:9080', //API服务器的地址
-        ws: true,  //代理websockets
-        changeOrigin: true, // 虚拟的站点需要更换origin
-        pathRewrite: {   //重写路径
-          '^/gis': ''
-        }
-      }
-    },
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://map.guojutech.net', //API服务器的地址
+    //     ws: true,  //代理websockets
+    //     changeOrigin: true, // 虚拟的站点需要更换origin
+    //     pathRewrite: {   //重写路径
+    //       '^/api': ''
+    //     }
+    //   }
+    // },
   },
   css: {
     loaderOptions: {
@@ -36,6 +38,15 @@ module.exports = {
   chainWebpack: config => {
     const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
     types.forEach(type => addStyleResource(config.module.rule('less').oneOf(type)))
+  },
+  configureWebpack :{
+    plugins:[
+      new webpack.ProvidePlugin({
+        $:"jquery",
+        jQuery:"jquery",
+        "windows.jQuery":"jquery"
+      })
+    ]
   }
 }
 

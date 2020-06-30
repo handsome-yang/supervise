@@ -28,7 +28,7 @@ body .el-scrollbar__wrap {
 // 滚动条样式美化
 ::-webkit-scrollbar-track-piece {
   //滚动条凹槽的颜色，还可以设置边框属性
-  background-color: #f8f8f8;
+  background-color: transparent;
 }
 ::-webkit-scrollbar {
   //滚动条的宽度
@@ -37,10 +37,10 @@ body .el-scrollbar__wrap {
 }
 ::-webkit-scrollbar-thumb {
   //滚动条的设置
-  background-color: #dddddd;
+  background-color: rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
   min-height: 28px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #bbb;
+  background-color: rgba(0, 0, 0, 0.5);
 }

@@ -53,29 +53,32 @@
           </div>
         </div>
         <div class="search-result">
-           <el-scrollbar style="height:100%">
-          <table border="0" cellpadding="0" cellspacing="0" class="min-table">
-            <tr class="thead">
-              <th>编号</th>
-              <th>车牌号</th>
-              <th>驾驶员</th>
-              <th>电话</th>
-              <th>报警类型</th>
-              <th>报警地点</th>
-              <th>报警时间</th>
-              <th>操作</th>
-            </tr>
-            <tbody>
-              <tr class="list-item" v-for="(row,rowIndex) in tableData" :key="rowIndex">
-                <td>{{rowIndex+1}}</td>
-                <td v-for="(cell,cellIndex) in row" :key="cellIndex">{{cell}}</td>
-                <td>
-                  <el-button type="primary" size="mini">处理</el-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-           </el-scrollbar>
+          <el-table
+            :data="tableData"
+            :max-height="mainTableHeight"
+            header-row-class-name="table-header-class"
+            style="width: 100%"
+          >
+            <el-table-column type="index" width="60" label="编号" align="center"></el-table-column>
+            <el-table-column prop="vno" label="车牌号" align="center"></el-table-column>
+            <el-table-column prop="driver" label="驾驶员" align="center"></el-table-column>
+            <el-table-column prop="terminal_sim" label="电话" align="center"></el-table-column>
+            <el-table-column prop="alarm_type_name" label="报警类型" align="center"></el-table-column>
+            <el-table-column
+              prop="address"
+              label="报警地点"
+              :show-overflow-tooltip="true"
+              align="center"
+            ></el-table-column>
+            <el-table-column label="报警时间" align="center">
+              <template slot-scope="scope">
+                <span>{{unixTimeformat(scope.row.gps_time)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="driver" label="操作" align="center">
+              <el-button type="primary" size="mini">处理</el-button>
+            </el-table-column>
+          </el-table>
         </div>
       </div>
       <div class="right-pannel">
@@ -103,10 +106,22 @@
               <p v-for="(item,index) in safeInfo[currenInSurer]" :key="index">
                 <img :src="item.img" alt />
                 <span class="key-style">{{item.key}}：</span>
-                <span
+                <!-- <span
                   class="value-style"
                   :style="{'color':item.color}"
-                >{{item.value}} &nbsp;{{item.unit}}</span>
+                >{{item.value}} &nbsp;{{item.unit}}</span>-->
+                <count-to
+                  :style="{'color':item.color}"
+                  class="value-style"
+                  :start-val="0"
+                  :end-val="item.value"
+                  :duration="4000"
+                  :decimals="0"
+                  separator=","
+                  :prefix="[1,3].includes(index) ? '¥' : ''"
+                  :suffix="item.unit"
+                  :autoplay="true"
+                ></count-to>
               </p>
             </div>
           </div>
@@ -141,142 +156,32 @@
 
 <script>
 // @ is an alias to /src
+import { login, initBaseAlarm } from "@/api";
+import { transportInitWebSocket } from "@/api/aspnetSignalR";
+import countTo from "vue-count-to";
 
 export default {
   name: "Home",
-  components: {},
+  components: {
+    countTo
+  },
   data() {
     return {
+      loginInfo: {
+        username: "admin",
+        password: "xiaoma256178"
+      },
       oilColor: "#00D98B",
+      mainTableHeight: 500,
       tableData: [
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        },
-        {
-          carId: "沪A·66666",
-          driver: "刘飞",
-          phone: 123456789,
-          warnType: "油量液位低",
-          warnpos: "云南某地",
-          warnTime: "2020年6月29日11:32:34"
-        }
+        // {
+        //   carId: "沪A·66666",
+        //   driver: "刘飞",
+        //   phone: 123456789,
+        //   warnType: "油量液位低",
+        //   warnpos: "云南某地",
+        //   warnTime: "2020年6月29日11:32:34"
+        // }
       ],
       currenInSurer: "中国人寿",
       safeList: [
@@ -294,28 +199,28 @@ export default {
           {
             img: require("../assets/images/矩形 414@2x.png"),
             key: "保险车辆数",
-            value: "8.658",
+            value: 8658,
             color: "#00D98B",
             unit: "辆"
           },
           {
             img: require("../assets/images/矩形 414 拷贝 2@2x.png"),
             key: "投保金额",
-            value: "¥128.658",
+            value: 128658,
             color: "#D99900",
             unit: ""
           },
           {
             img: require("../assets/images/矩形 414 拷贝 3@2x.png"),
             key: "理赔次数",
-            value: "12",
+            value: 12,
             color: "#00BAFF",
             unit: "次"
           },
           {
             img: require("../assets/images/矩形 414 拷贝 4@2x.png"),
             key: "理赔金额",
-            value: "¥121,930",
+            value: 121930,
             color: "#9C35DD",
             unit: ""
           }
@@ -345,17 +250,32 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+    login(this.loginInfo).then(res => {
+      sessionStorage.setItem("token", res);
+      // this.getAlarm();
+      transportInitWebSocket(this);
+    });
+    // this.initWebsocket();
+    this.$nextTick(() => {
+      this.loadLeftCharts();
+      this.loadRightCharts();
+      this.resizeTable();
+    });
+  },
   mounted() {
-    this.loadLeftCharts();
-    this.loadRightCharts();
     window.addEventListener("resize", () => {
       this.myChartBar.resize();
       this.myChartLine.resize();
       this.myChartRightBar.resize();
+      this.resizeTable();
     });
   },
+  computed: {},
   methods: {
+    unixTimeformat(time) {
+      return this.$moment.unix(time).format("YYYY-MM-DD HH:mm");
+    },
     selectItem(com) {
       this.oilColor = com == 2 ? "#FF4049" : "#00D98B";
     },
@@ -453,8 +373,9 @@ export default {
             show: false
           },
           axisLabel: {
+            inside: false,
             textStyle: {
-              color: "#999"
+              color: "#9CAEE5"
             }
           }
         },
@@ -509,10 +430,47 @@ export default {
       const optionLine = {
         xAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+          splitLine: { show: false }, //去除网格线
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#212230",
+              width: "2"
+            }
+          },
+          axisLabel: {
+            inside: false,
+            textStyle: {
+              color: "#9CAEE5"
+            },
+            interval: 0,
+            rotate: -40
+          }
         },
         yAxis: {
-          type: "value"
+          type: "value",
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: "dashed",
+              color: ["#315070"]
+            }
+          }, //网格线
+
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#212230",
+              width: "2"
+            }
+          },
+          axisLabel: {
+            inside: false,
+            textStyle: {
+              color: "#9CAEE5"
+            }
+          }
         },
         series: [
           {
@@ -616,8 +574,9 @@ export default {
             show: false
           },
           axisLabel: {
+            inside: false,
             textStyle: {
-              color: "#999"
+              color: "#9CAEE5"
             }
           }
         },
@@ -668,6 +627,32 @@ export default {
     },
     roadFilter(ins) {
       this.currentTraffic = ins;
+    },
+    resizeTable() {
+      let desHeight =
+        document.querySelector(".search-result").offsetHeight - "10";
+      this.mainTableHeight = desHeight;
+    },
+    initWebsocket() {
+      let token = sessionStorage.getItem("token");
+      const ws = new WebSocket(
+        `ws:map.guojutech.net/PositionHub?Bearer=${token}`
+      );
+      ws.onopen = () => {
+        console.log("连接成功");
+      };
+      ws.onmessage = msg => {
+        console.log(msg);
+      };
+      ws.onerror = err => {
+        console.log(err);
+      };
+    },
+    getAlarm() {
+      // initBaseAlarm().then(res => {
+      //   console.log(res);
+      //   this.tableData = res;
+      // });
     }
   }
 };
@@ -815,7 +800,7 @@ section {
     }
     .search-result {
       height: calc(~"100% - 65px");
-       .min-table {
+      .min-table {
         border-collapse: collapse;
         border-spacing: 0;
         width: 100%;
@@ -842,6 +827,42 @@ section {
         .row-class {
           // height: 40px;
           color: white;
+        }
+      }
+
+      // ele样式覆盖
+      /deep/.el-table th,
+      /deep/.el-table tr {
+        background: transparent;
+      }
+      /deep/.el-table,
+      /deep/.el-table__expanded-cell {
+        background: transparent;
+        font-size: 16px;
+        color: white;
+      }
+      /deep/.el-table td,
+      /deep/.el-table th.is-leaf {
+        border-bottom: 0;
+      }
+      /deep/.el-table--enable-row-hover .el-table__body tr:hover > td {
+        background: transparent;
+        // pointer-events: none;
+      }
+
+      /deep/.el-table::before {
+        height: 0;
+      }
+
+      /deep/.table-header-class {
+        font-size: 16px;
+        color: white;
+        background: url("../assets/images/矩形 412 拷贝 6@2x.png") no-repeat
+          center center !important;
+        filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')";
+        background-size: 100% 100%;
+        th {
+          height: 49px;
         }
       }
     }
