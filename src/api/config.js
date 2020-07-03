@@ -14,7 +14,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 window.API_ROOT = API_ROOT
 export const Service = axios.create({
-  timeout: 7 * 1000, // 请求超时时间
+  timeout: 9 * 1000, // 请求超时时间
   baseURL: API_ROOT,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'

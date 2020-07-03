@@ -2,6 +2,7 @@ import * as signalR from "@aspnet/signalr";
 
 export const transportInitWebSocket = vm => {
     const token = sessionStorage.getItem("token")
+    const rules = ["超速报警","疲劳驾驶报警","终端插入报警"]
     window.signalRConn = new signalR.HubConnectionBuilder()
         .withUrl(window.API_ROOT + "/PositionHub?Bearer=" + token)
         .build();
@@ -10,10 +11,13 @@ export const transportInitWebSocket = vm => {
         message = JSON.parse(message);
         if (!message.vno) return;
         if(!message.alarm_type_name) return;
+        if(message.alarm_type_name)
         if(vm.tableData.length > 5000){
             vm.tableData.pop()    
         }
-        vm.tableData.unshift(message)
+        if(rules.includes(message.alarm_type_name)){
+            vm.tableData.unshift(message)
+        }
         
         // //更新右上角表格的报警信息
         // transportAlarmableUpdateRow(message, wgs84togcj02, status);
