@@ -5,7 +5,7 @@ export const login = params => post("/JT808WebApi/Auth/RequestToken",params)
 
 
 // 报警列表初始化
-export const initBaseAlarm = () => post("/JT808WebApi/Alarm/QueryAlarmTop1ToMap")
+// export const initBaseAlarm = () => post("/JT808WebApi/Alarm/QueryAlarmTop1ToMap")
 
 
 // 根据报警类型筛选数据

@@ -50,7 +50,7 @@
 
 <script>
 // @ is an alias to /src
-import { login, initBaseAlarm } from "@/api";
+import { login, initBaseAlarm, QuerySpecifyTypeCarAlarm } from "@/api";
 import { transportInitWebSocket } from "@/api/aspnetSignalR";
 
 import leftPanel from "@/components/LeftPanel";
@@ -89,7 +89,7 @@ export default {
     });
     // this.initWebsocket();
     this.$nextTick(() => {
-      this.resizeTable()
+      this.resizeTable();
     });
   },
   mounted() {
@@ -124,17 +124,12 @@ export default {
       };
     },
     getAlarm() {
-      const rules = ["超速报警", "疲劳驾驶报警", "终端插入报警"];
-      initBaseAlarm().then(res => {
-        rules.forEach(ele => {
-          for (let key in res) {
-            res[key]["terminal_sim"] = res[key].sim;
-            if (key.includes(ele)) {
-              // console.log(res[key]);
-              this.tableData.push(res[key]);
-            }
-          }
-        });
+      // const rules = ["超速报警", "疲劳驾驶报警", "终端插入报警"];
+      QuerySpecifyTypeCarAlarm().then(res => {
+        for (let key in res) {
+          res[key]["terminal_sim"] = res[key].sim;
+        }
+        this.tableData = res;
       });
     },
     resizeTotal() {

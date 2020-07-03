@@ -13,7 +13,7 @@ export const transportInitWebSocket = vm => {
         if(!message.alarm_type_name) return;
         if(message.alarm_type_name)
         if(vm.tableData.length > 5000){
-            vm.tableData.pop()    
+            vm.tableData.pop()
         }
         if(rules.includes(message.alarm_type_name)){
             vm.tableData.unshift(message)
