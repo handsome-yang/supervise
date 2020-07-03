@@ -85,17 +85,18 @@ export default {
       sessionStorage.setItem("token", res);
       this.getAlarm();
       transportInitWebSocket(this);
+      this.$refs["right-panel"].loadRightCharts();
     });
     // this.initWebsocket();
-    this.$nextTick(() =>{
-      this.resizeTotal();
-    })
+    this.$nextTick(() => {
+      this.resizeTable()
+    });
   },
   mounted() {
     window.addEventListener("resize", this.resizeTotal);
-    this.$once("hook:beforeDestory",() => {
-      window.removeEventListener("resize",this.resizeTotal)
-    })
+    this.$once("hook:beforeDestory", () => {
+      window.removeEventListener("resize", this.resizeTotal);
+    });
   },
   computed: {},
   methods: {
@@ -129,7 +130,7 @@ export default {
           for (let key in res) {
             res[key]["terminal_sim"] = res[key].sim;
             if (key.includes(ele)) {
-              console.log(res[key]);
+              // console.log(res[key]);
               this.tableData.push(res[key]);
             }
           }

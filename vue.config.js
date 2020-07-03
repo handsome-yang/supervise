@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
   lintOnSave: false,
-  publicPath: '/supervise',
+  publicPath: process.env.NODE_ENV === 'development' ? '/' : './',
   outputDir: 'supervise',
   devServer: {
     port: 5500,

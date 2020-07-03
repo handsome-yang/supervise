@@ -140,6 +140,36 @@ export default {
             color: "#9C35DD",
             unit: ""
           }
+        ],
+        中国平安: [
+          {
+            img: require("../assets/images/矩形 414@2x.png"),
+            key: "保险车辆数",
+            value: 12345,
+            color: "#00D98B",
+            unit: "辆"
+          },
+          {
+            img: require("../assets/images/矩形 414 拷贝 2@2x.png"),
+            key: "投保金额",
+            value: 232345,
+            color: "#D99900",
+            unit: ""
+          },
+          {
+            img: require("../assets/images/矩形 414 拷贝 3@2x.png"),
+            key: "理赔次数",
+            value: 7,
+            color: "#00BAFF",
+            unit: "次"
+          },
+          {
+            img: require("../assets/images/矩形 414 拷贝 4@2x.png"),
+            key: "理赔金额",
+            value: 3414324,
+            color: "#9C35DD",
+            unit: ""
+          }
         ]
       }
     };
@@ -147,9 +177,7 @@ export default {
   components: {
     countTo
   },
-  mounted() {
-    this.loadRightCharts();
-  },
+  mounted() {},
   methods: {
     selectInsurer(ins) {
       this.currenInSurer = ins;
@@ -158,141 +186,135 @@ export default {
       this.currentTraffic = ins;
     },
     loadRightCharts() {
+      let xData = [
+        "超速报警",
+        "急加速报警",
+        "急减速报警",
+        "疲劳驾驶报警",
+        "终端拔出报警",
+        "空档滑行"
+      ];
+      // let rules = xData.map(item => this.$moment().format("YYYYMMDD") + `${item}`);
+      let rules = xData;
       QueryWeekAlarmStatistics().then(res => {
-          console.log(res);
-          
-      });
-      // 柱状图
-      let myChartRightBar = this.$echarts.init(
-        document.getElementById("echarts-warn-total")
-      );
-      this["myChartRightBar"] = myChartRightBar;
-      const dataAxis = [
-        "超速",
-        "急加速",
-        "急减速",
-        "疲劳驾驶",
-        "设备拔出",
-        "路线"
-      ];
-      let dataShadow = [];
-      let yMax = 500;
-      const data = [
-        220,
-        182,
-        191,
-        234,
-        290,
-        330,
-        310,
-        123,
-        442,
-        321,
-        90,
-        149,
-        210,
-        122,
-        133,
-        334,
-        198,
-        123,
-        125,
-        220
-      ];
+        let _Ydata = [];
+        rules.forEach(ele => {
+          let _arr = res.filter(item => item.name.includes(ele));
+          _Ydata.push(..._arr);
+        });
+        let _data = _Ydata.map(item => item.value[item.value.length - 1]);
 
-      for (var i = 0; i < data.length; i++) {
-        dataShadow.push(yMax);
-      }
-      const optionRightBar = {
-        xAxis: {
-          splitLine: { show: false }, //去除网格线
-          data: dataAxis,
-          axisLabel: {
-            inside: false,
-            textStyle: {
-              color: "#9CAEE5"
+        // 柱状图
+        let myChartRightBar = this.$echarts.init(
+          document.getElementById("echarts-warn-total")
+        );
+        this["myChartRightBar"] = myChartRightBar;
+        const dataAxis = xData;
+        let dataShadow = [];
+        let yMax = 500;
+        const data = _data;
+
+        for (var i = 0; i < data.length; i++) {
+          dataShadow.push(yMax);
+        }
+        const optionRightBar = {
+          xAxis: {
+            splitLine: { show: false }, //去除网格线
+            data: dataAxis,
+            axisLabel: {
+              inside: false,
+              textStyle: {
+                color: "#9CAEE5"
+              },
+              interval: 0,
+              rotate: -40
             },
-            interval: 0,
-            rotate: 0
-          },
-          axisTick: {
-            show: false
-          },
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: "#212230",
-              width: "2"
-            }
-          },
-          z: 10
-        },
-        yAxis: {
-          splitLine: {
-            show: true,
-            lineStyle: {
-              type: "dashed",
-              color: ["#315070"]
-            }
-          }, //网格线
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: "#212230",
-              width: "2"
-            }
-          },
-          axisTick: {
-            show: false
-          },
-          axisLabel: {
-            inside: false,
-            textStyle: {
-              color: "#9CAEE5"
-            }
-          }
-        },
-        dataZoom: [
-          {
-            type: "inside"
-          }
-        ],
-        series: [
-          {
-            // For shadow
-            type: "bar",
-            itemStyle: {
-              color: "rgba(0,0,0,0.05)"
+            axisTick: {
+              show: false
             },
-            barGap: "-100%",
-            barCategoryGap: "40%",
-            data: dataShadow,
-            animation: false
-          },
-          {
-            type: "bar",
-            itemStyle: {
-              color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: "#83bff6" },
-                { offset: 0.5, color: "#188df0" },
-                { offset: 1, color: "#188df0" }
-              ])
-            },
-            emphasis: {
-              itemStyle: {
-                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: "#2378f7" },
-                  { offset: 0.7, color: "#2378f7" },
-                  { offset: 1, color: "#83bff6" }
-                ])
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#212230",
+                width: "2"
               }
             },
-            data: data
+            z: 10
+          },
+          yAxis: {
+            splitLine: {
+              show: true,
+              lineStyle: {
+                type: "dashed",
+                color: ["#315070"]
+              }
+            }, //网格线
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#212230",
+                width: "2"
+              }
+            },
+            axisTick: {
+              show: false
+            },
+            axisLabel: {
+              inside: false,
+              textStyle: {
+                color: "#9CAEE5"
+              }
+            }
+          },
+          dataZoom: [
+            {
+              type: "inside"
+            }
+          ],
+          series: [
+            // {
+            //   // For shadow
+            //   type: "bar",
+            //   itemStyle: {
+            //     color: "rgba(0,0,0,0.05)"
+            //   },
+            //   barGap: "-100%",
+            //   barCategoryGap: "40%",
+            //   data: dataShadow,
+            //   animation: false
+            // },
+            {
+              type: "bar",
+              itemStyle: {
+                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: "#83bff6" },
+                  { offset: 0.5, color: "#188df0" },
+                  { offset: 1, color: "#188df0" }
+                ])
+              },
+              emphasis: {
+                itemStyle: {
+                  color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 0, color: "#2378f7" },
+                    { offset: 0.7, color: "#2378f7" },
+                    { offset: 1, color: "#83bff6" }
+                  ])
+                }
+              },
+              data: data
+            }
+          ],
+          tooltip: {
+            trigger: "axis",
+            axisPointer: {
+              // 坐标轴指示器，坐标轴触发有效
+              type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            }
           }
-        ]
-      };
+        };
 
-      myChartRightBar.setOption(optionRightBar);
+        myChartRightBar.setOption(optionRightBar);
+      });
     },
     resizeCharts() {
       this.myChartRightBar.resize();
@@ -400,6 +422,7 @@ export default {
       .el-dropdown {
         position: absolute;
         right: 20px;
+        z-index: 1;
       }
       .content-main {
         height: 100%;
