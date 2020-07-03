@@ -143,8 +143,6 @@ export default {
     },
     resizeTotal() {
       this.resizeTable();
-      console.log(this.$refs["left-panel"].resizeCharts);
-
       this.$refs["left-panel"].resizeCharts();
       this.$refs["right-panel"].resizeCharts();
     }
