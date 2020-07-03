@@ -93,7 +93,16 @@ export default {
     });
   },
   mounted() {
-    window.addEventListener("resize", this.resizeTotal);
+    var resizeTimer = null;
+    window.addEventListener("resize", () => {
+      if (resizeTimer) {
+        clearTimeout(resizeTimer);
+      }
+      resizeTimer = setTimeout(() => {
+        this.resizeTotal();
+      }, 310);
+    });
+
     this.$once("hook:beforeDestory", () => {
       window.removeEventListener("resize", this.resizeTotal);
     });
@@ -134,6 +143,8 @@ export default {
     },
     resizeTotal() {
       this.resizeTable();
+      console.log(this.$refs["left-panel"].resizeCharts);
+
       this.$refs["left-panel"].resizeCharts();
       this.$refs["right-panel"].resizeCharts();
     }

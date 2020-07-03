@@ -24,7 +24,7 @@ export const transportInitWebSocket = vm => {
     });
     window.signalRConn.on("CarHeartbeat", (TerminalNo, message) => {
         message = JSON.parse(message);
-        console.log(TerminalNo, message);
+        // console.log(TerminalNo, message);
         
         //console.log("CarHeartbeat",message);
         // if (message.alarm_type_name == "车辆故障码") return;
