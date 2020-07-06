@@ -23,7 +23,7 @@
           >
             <el-table-column type="index" width="60" label="编号" align="center"></el-table-column>
             <el-table-column prop="vno" label="车牌号" align="center"></el-table-column>
-            <el-table-column prop="driver" label="驾驶员" align="center"></el-table-column>
+            <el-table-column prop="driver_name" label="驾驶员" align="center"></el-table-column>
             <el-table-column prop="terminal_sim" label="电话" align="center"></el-table-column>
             <el-table-column prop="alarm_type_name" label="报警类型" align="center"></el-table-column>
             <el-table-column
