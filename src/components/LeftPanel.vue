@@ -45,7 +45,7 @@ export default {
   name: "leftpanel",
   data() {
     return {
-      oilColor: "#00D98B",
+      oilColor: "#00D98B"
     };
   },
   created() {},
@@ -265,7 +265,7 @@ export default {
     },
     selectItem(com) {
       this.oilColor = com == 2 ? "#FF4049" : "#00D98B";
-    },
+    }
   }
 };
 </script>
@@ -355,6 +355,7 @@ export default {
       flex-direction: column;
       & > div {
         flex: 1;
+        // width: 450px;
       }
     }
   }

@@ -93,7 +93,16 @@ export default {
     });
   },
   mounted() {
-    window.addEventListener("resize", this.resizeTotal);
+    var resizeTimer = null;
+    window.addEventListener("resize", () => {
+      if (resizeTimer) {
+        clearTimeout(resizeTimer);
+      }
+      resizeTimer = setTimeout(() => {
+        this.resizeTotal();
+      }, 310);
+    });
+
     this.$once("hook:beforeDestory", () => {
       window.removeEventListener("resize", this.resizeTotal);
     });
