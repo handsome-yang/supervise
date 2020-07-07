@@ -2,7 +2,7 @@ import * as signalR from "@aspnet/signalr";
 
 export const transportInitWebSocket = vm => {
     const token = sessionStorage.getItem("token")
-    const rules = ["超速报警","疲劳驾驶报警","终端插入报警"]
+    const rules = ["超速报警","疲劳驾驶报警"]
     window.signalRConn = new signalR.HubConnectionBuilder()
         .withUrl(window.API_ROOT + "/PositionHub?Bearer=" + token)
         .build();
@@ -16,7 +16,7 @@ export const transportInitWebSocket = vm => {
             vm.tableData.pop()
         }
         if(rules.includes(message.alarm_type_name)){
-            console.log(message );
+            // console.log(message );
             vm.tableData.unshift(message)
         }
         

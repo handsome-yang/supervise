@@ -21,30 +21,65 @@
             header-row-class-name="table-header-class"
             style="width: 100%"
           >
-            <el-table-column type="index" width="60" label="编号" align="center"></el-table-column>
-            <el-table-column prop="vno" label="车牌号" align="center"></el-table-column>
-            <el-table-column prop="driver_name" label="驾驶员" align="center"></el-table-column>
-            <el-table-column prop="terminal_sim" label="电话" align="center"></el-table-column>
-            <el-table-column prop="alarm_type_name" label="报警类型" align="center"></el-table-column>
+            <el-table-column
+              type="index"
+              :show-overflow-tooltip="true"
+              label="序 号"
+              min-width="10%"
+              align="center"
+            ></el-table-column>
+            <el-table-column prop="vno" label="车牌号" min-width="10%" align="center"></el-table-column>
+            <el-table-column prop="driver_name" label="驾驶员" min-width="10%" align="center"></el-table-column>
+            <el-table-column prop="terminal_sim" label="电话" min-width="15%" align="center"></el-table-column>
+            <el-table-column
+              prop="alarm_type_name"
+              :show-overflow-tooltip="true"
+              label="报警类型"
+              min-width="10%"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="address"
               label="报警地点"
               :show-overflow-tooltip="true"
               align="center"
+              min-width="20%"
             ></el-table-column>
-            <el-table-column label="报警时间" align="center">
+            <el-table-column
+              label="报警时间"
+              :show-overflow-tooltip="true"
+              min-width="15%"
+              align="center"
+            >
               <template slot-scope="scope">
                 <span>{{unixTimeformat(scope.row.gps_time)}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="driver" label="操作" align="center">
-              <el-button type="primary" size="mini">处理</el-button>
+            <el-table-column prop="driver" label="操作" min-width="10%" align="center">
+              <el-button @click="handlerDialog = true" type="primary" size="mini">处理</el-button>
             </el-table-column>
           </el-table>
         </div>
       </div>
       <right-panel ref="right-panel"></right-panel>
     </section>
+
+    <el-dialog :visible.sync="handlerDialog">
+      <el-table :data="historyPunish" style="width: 100%">
+        <el-table-column prop="date" label="日期" width="180"></el-table-column>
+        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
+        <el-table-column prop="address" label="地址"></el-table-column>
+      </el-table>
+      <el-radio-group size="medium" v-model="punishRadio">
+        <el-radio :label="3" border>提醒</el-radio>
+        <el-radio :label="6" border>罚款</el-radio>
+        <el-radio :label="9" border>停运</el-radio>
+      </el-radio-group>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handlerDialog = false">取 消</el-button>
+        <el-button type="primary" @click="handlerDialog = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -68,16 +103,39 @@ export default {
         password: "xiaoma256178"
       },
       mainTableHeight: 0,
+      handlerDialog: false,
+      punishRadio: 3,
       tableData: [
-        // {
-        //   carId: "沪A·66666",
-        //   driver: "刘飞",
-        //   phone: 123456789,
-        //   warnType: "油量液位低",
-        //   warnpos: "云南某地",
-        //   warnTime: "2020年6月29日11:32:34"
-        // }
-      ]
+      ],
+      historyPunish: [{
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-08',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-06',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-07',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }]
     };
   },
   created() {
@@ -145,6 +203,14 @@ export default {
       this.resizeTable();
       this.$refs["left-panel"].resizeCharts();
       this.$refs["right-panel"].resizeCharts();
+    },
+    labelHead(h, { column, index }) {
+      let l = column.label.length;
+      let f = 54; //每个字大小，其实是每个字的比例值，大概会比字体大小差不多大一点，
+      column.minWidth = f * l; //字大小乘个数即长度 ,注意不要加px像素，这里minWidth只是一个比例值，不是真正的长度 //然后将列标题放在一个div块中，注意块的宽度一定要100%，否则表格显示不完全
+      return h("div", { class: "table-head", style: { width: "100%" } }, [
+        column.label
+      ]);
     }
   }
 };
@@ -271,10 +337,10 @@ section {
       /deep/.table-header-class {
         font-size: 16px;
         color: white;
-        background: url("../assets/images/矩形 412 拷贝 6@2x.png") no-repeat
-          center center !important;
+        background: url("../assets/images/矩形 412 拷贝 6@2x.png") no-repeat !important;
         filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')";
-        background-size: 100% 100%;
+        background-size: 100% 100% !important;
+        // background-size: cover;
         th {
           height: 49px;
         }
@@ -294,4 +360,5 @@ section {
 .el-icon-arrow-down {
   font-size: 12px;
 }
+
 </style>
